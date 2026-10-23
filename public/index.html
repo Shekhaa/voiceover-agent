@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraVoice Studio — SOTA Kokoro-82M & Dramatic Music</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #080a0f;
+      --card-bg: #10141d;
+      --card-border: #1b2230;
+      --card-hover: #161c28;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.25);
+      --accent: #f43f5e;
+      --gold: #f59e0b;
+      --kokoro-purple: #8b5cf6;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --success: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 36px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1060px;
+    }
+
+    /* Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #8b5cf6, #f43f5e);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
+    }
+
+    .brand-logo svg {
+      width: 24px;
+      height: 24px;
+      fill: #fff;
+    }
+
+    .brand-name {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-pill {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: #a78bfa;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-pill::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #a78bfa;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #a78bfa;
+    }
+
+    /* Grid Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 820px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Script Editor */
+    textarea {
+      width: 100%;
+      height: 190px;
+      background: #0a0d14;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      color: var(--text-main);
+      font-size: 15px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    textarea:focus {
+      border-color: var(--kokoro-purple);
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25);
+    }
+
+    /* Word Stretching Feature Box */
+    .stretching-box {
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: #ddd;
+    }
+
+    .stretching-box strong {
+      color: #c4b5fd;
+    }
+
+    .hook-bar {
+      margin-top: 14px;
+    }
+
+    .hook-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .sample-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sample-pill {
+      background: #141a24;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .sample-pill:hover {
+      background: #1e2636;
+      color: #fff;
+      border-color: #3b465c;
+    }
+
+    /* Voice Cards */
+    .voices-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 270px;
+      overflow-y: auto;
+      padding-right: 4px;
+      margin-bottom: 18px;
+    }
+
+    .voice-option {
+      background: #0a0d14;
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .voice-option:hover {
+      background: var(--card-hover);
+      border-color: #2b364a;
+    }
+
+    .voice-option.active {
+      border-color: var(--kokoro-purple);
+      background: rgba(139, 92, 246, 0.08);
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.2);
+    }
+
+    .voice-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    .voice-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .voice-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #231d38;
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    .voice-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    /* Music Section */
+    .music-section {
+      background: #0a0d14;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+
+    .music-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f43f5e;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    select {
+      width: 100%;
+      background: #121620;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: #f43f5e;
+    }
+
+    .control-row {
+      margin-top: 14px;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--kokoro-purple);
+    }
+
+    /* Action Button */
+    .btn-generate {
+      width: 100%;
+      background: linear-gradient(135deg, #8b5cf6, #f43f5e);
+      color: #ffffff;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      box-shadow: 0 4px 20px rgba(139, 92, 246, 0.35);
+      transition: transform 0.1s, box-shadow 0.2s;
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 26px rgba(139, 92, 246, 0.5);
+    }
+
+    .btn-generate:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Player Card */
+    .player-card {
+      margin-top: 24px;
+      display: none;
+      background: linear-gradient(135deg, #151a26, #0a0d14);
+      border: 1px solid #28334a;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .audio-custom {
+      width: 100%;
+      margin: 12px 0;
+      border-radius: 8px;
+    }
+
+    .btn-download {
+      background: #10b981;
+      color: #000;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+
+    .btn-download:hover {
+      background: #059669;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="app-header">
+      <div class="brand-title">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-name">AuraVoice Studio</div>
+        </div>
+      </div>
+      <span class="brand-pill">Kokoro-82M SOTA Engine + Word Stretcher</span>
+    </header>
+
+    <div class="workspace-grid">
+      <!-- Left Column: Script Editor & Word Stretching -->
+      <div class="card">
+        <div class="card-title">
+          <span>Script & Terminal Lengthening</span>
+          <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;" id="stats-counter">0 words</span>
+        </div>
+        <p class="card-subtitle">Use asterisks like <code>*never*</code> to stretch words and eliminate the robotic teleprompter effect.</p>
+
+        <textarea id="script-input" placeholder="Type your script here...">What if I told you that the secret you were searching for... was *never* meant to be found? ... In the end, the truth wasn't hidden in the shadows. It was staring us right in the face the entire *time*...</textarea>
+
+        <div class="stretching-box">
+          <strong>✨ Why Words Stretch Naturally:</strong>
+          Real humans decelerate their vocal cords on final stressed vowels (Phrase-Final Lengthening). Our engine converts periods into soft trailing thought anchors (<code>...</code>) and stretches words surrounded by asterisks (<code>*word*</code>) so the narrator truly savors the ending!
+        </div>
+
+        <div class="hook-bar">
+          <div class="hook-label">
+            <span>⚡ High-Retention Dramatic Hooks:</span>
+          </div>
+          <div class="sample-tags">
+            <button class="sample-pill" onclick="loadHook('suspense')">🔥 The Pattern Interrupt</button>
+            <button class="sample-pill" onclick="loadHook('movie')">🎬 Dramatic Mystery</button>
+            <button class="sample-pill" onclick="loadHook('relatable')">💡 Relatable Reflection</button>
+          </div>
+        </div>
+
+        <!-- Music Mixing Settings -->
+        <div class="music-section">
+          <div class="music-title">
+            <svg style="width:16px; height:16px; fill:currentColor;" viewBox="0 0 24 24">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+            Background Music (Auto-Ducked)
+          </div>
+
+          <select id="music-select">
+            <option value="cinematic" selected>🎬 Dramatic Cinematic (Hans Zimmer Tension)</option>
+            <option value="inspirational">🎹 Emotional & Uplifting Piano</option>
+            <option value="suspense">🕵️ Dark Ambient (True Crime & Mystery)</option>
+            <option value="chill">☕ Modern Chill (Tech Explainer)</option>
+            <option value="none">🔇 No Music (Voice Only)</option>
+          </select>
+
+          <div class="control-row">
+            <div class="control-label">
+              <span>Music Ducking Volume</span>
+              <span id="music-vol-val">15% (Optimal)</span>
+            </div>
+            <input type="range" id="music-vol-slider" min="5" max="30" value="15" step="1">
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Voice Personas (Kokoro-82M + Edge) -->
+      <div class="card">
+        <div class="card-title">Narrator Personas</div>
+        <p class="card-subtitle">Powered by SOTA Kokoro-82M & Azure Neural models.</p>
+
+        <div class="voices-list" id="voice-options-container">
+          <!-- Populated by JS -->
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">
+            <span>Speaking Pace</span>
+            <span id="pace-val">Dramatic Weight (-5%)</span>
+          </div>
+          <input type="range" id="rate-slider" min="-15" max="15" value="-5" step="1">
+        </div>
+
+        <div class="control-row">
+          <div class="control-label">
+            <span>Pitch Depth</span>
+            <span id="pitch-val">Natural (0Hz)</span>
+          </div>
+          <input type="range" id="pitch-slider" min="-6" max="6" value="0" step="1">
+        </div>
+
+        <button id="btn-synthesize" class="btn-generate">
+          <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          Render Voiceover with Kokoro & Music
+        </button>
+      </div>
+    </div>
+
+    <!-- Output Player Card -->
+    <div id="player-container" class="player-card">
+      <div class="player-header">
+        <div>
+          <h3 style="font-size:16px; font-weight:700;">Mastered Track Ready</h3>
+          <p style="font-size:12px; color:var(--text-muted);" id="audio-meta">SOTA Kokoro Neural Engine + Auto-Ducked Score</p>
+        </div>
+        <a id="btn-download-mp3" href="#" download class="btn-download">
+          <svg style="width:16px; height:16px; fill:currentColor;" viewBox="0 0 24 24">
+            <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/>
+          </svg>
+          Download Mastered MP3
+        </a>
+      </div>
+      <audio id="audio-element" class="audio-custom" controls></audio>
+    </div>
+
+  </div>
+
+  <script>
+    const VOICES = [
+      { key: "kokoro_adam", name: "Adam", role: "SOTA Deep Narrative", badge: "Kokoro 82M", desc: "Ultra-realistic American male. Stretches vowels with human emotional depth." },
+      { key: "kokoro_michael", name: "Michael", role: "Dramatic Storyteller", badge: "Kokoro 82M", desc: "Dynamic cadence with breath pauses. Best for viral hook intros." },
+      { key: "kokoro_sarah", name: "Sarah", role: "Expressive Female", badge: "Kokoro 82M", desc: "Natural human inflections without robotic clipped endings." },
+      { key: "kokoro_george", name: "George", role: "British Narrator", badge: "Kokoro 82M", desc: "Sophisticated British storytelling with natural terminal slowdown." },
+      { key: "marcus", name: "Marcus", role: "Documentary Baritone", badge: "Azure Neural", desc: "Deep, authoritative, and cinematic. Great for trailers." },
+      { key: "james", name: "James", role: "Viral Podcast Host", badge: "Azure Neural", desc: "Authentic and energetic. Perfect for YouTube/Reels." }
+    ];
+
+    let selectedVoice = "kokoro_adam";
+    const voiceContainer = document.getElementById('voice-options-container');
+    const scriptInput = document.getElementById('script-input');
+    const statsCounter = document.getElementById('stats-counter');
+    const rateSlider = document.getElementById('rate-slider');
+    const pitchSlider = document.getElementById('pitch-slider');
+    const musicSelect = document.getElementById('music-select');
+    const musicVolSlider = document.getElementById('music-vol-slider');
+    const musicVolVal = document.getElementById('music-vol-val');
+    const paceVal = document.getElementById('pace-val');
+    const pitchVal = document.getElementById('pitch-val');
+    const btnSynthesize = document.getElementById('btn-synthesize');
+    const playerContainer = document.getElementById('player-container');
+    const audioElement = document.getElementById('audio-element');
+    const btnDownloadMp3 = document.getElementById('btn-download-mp3');
+    const audioMeta = document.getElementById('audio-meta');
+
+    function renderVoices() {
+      voiceContainer.innerHTML = VOICES.map(v => `
+        <div class="voice-option ${v.key === selectedVoice ? 'active' : ''}" onclick="selectVoice('${v.key}')">
+          <div class="voice-header">
+            <span class="voice-name">${v.name} &bull; ${v.role}</span>
+            <span class="voice-badge">${v.badge}</span>
+          </div>
+          <div class="voice-desc">${v.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectVoice(key) {
+      selectedVoice = key;
+      renderVoices();
+    }
+    renderVoices();
+
+    function updateStats() {
+      const text = scriptInput.value.trim();
+      const words = text ? text.split(/\s+/).length : 0;
+      statsCounter.textContent = `${words} words &bull; ${text.length} chars`;
+    }
+    scriptInput.addEventListener('input', updateStats);
+    updateStats();
+
+    musicVolSlider.addEventListener('input', () => {
+      musicVolVal.textContent = `${musicVolSlider.value}% (Ducked)`;
+    });
+
+    rateSlider.addEventListener('input', () => {
+      const v = parseInt(rateSlider.value);
+      paceVal.textContent = v === 0 ? "Normal (0%)" : (v > 0 ? `+${v}% Faster` : `${v}% Slower`);
+    });
+
+    pitchSlider.addEventListener('input', () => {
+      const v = parseInt(pitchSlider.value);
+      pitchVal.textContent = v === 0 ? "Natural (0Hz)" : (v > 0 ? `+${v}Hz Higher` : `${v}Hz Deeper`);
+    });
+
+    const HOOKS = {
+      suspense: "Stop scrolling... what if I told you that the biggest lie you were ever told was that hard work guarantees success? Look around you. The people who actually win don't play the same *game*...",
+      movie: "In the summer of 1994, three divers descended beneath the Pacific trench. Only two came back... and neither spoke a word for thirty *years*...",
+      relatable: "Have you ever felt like you're doing everything right, but somehow everyone else is five steps ahead of you? You're not crazy... and you're definitely not *alone*..."
+    };
+
+    function loadHook(key) {
+      scriptInput.value = HOOKS[key] || "";
+      updateStats();
+      if (key === 'suspense' || key === 'movie') {
+        musicSelect.value = 'cinematic';
+        selectVoice('kokoro_adam');
+      } else {
+        musicSelect.value = 'inspirational';
+        selectVoice('kokoro_sarah');
+      }
+    }
+
+    btnSynthesize.addEventListener('click', async () => {
+      const text = scriptInput.value.trim();
+      if (!text) {
+        alert("Please enter a script.");
+        return;
+      }
+
+      btnSynthesize.disabled = true;
+      btnSynthesize.innerHTML = `⏳ Synthesizing with Kokoro & Mixing...`;
+
+      const rateOffset = (parseInt(rateSlider.value) >= 0 ? "+" : "") + rateSlider.value + "%";
+      const pitchOffset = (parseInt(pitchSlider.value) >= 0 ? "+" : "") + pitchSlider.value + "Hz";
+      const volumeFloat = parseFloat(musicVolSlider.value) / 100.0;
+
+      try {
+        const response = await fetch('/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: text,
+            voice: selectedVoice,
+            rate: rateOffset,
+            pitch: pitchOffset,
+            music: musicSelect.value,
+            music_volume: volumeFloat,
+            humanize: true
+          })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          audioElement.src = data.audioUrl;
+          btnDownloadMp3.href = data.audioUrl;
+          btnDownloadMp3.download = data.filename;
+          audioMeta.textContent = `Model: ${data.voice.toUpperCase()} • Music: ${data.music.toUpperCase()} • Auto-Ducking: ${musicVolSlider.value}% • Terminal Lengthening: ON`;
+          playerContainer.style.display = 'block';
+          audioElement.play();
+        } else {
+          alert("Generation failed: " + (data.detail || "Server error"));
+        }
+      } catch (err) {
+        alert("Connection error: " + err.message);
+      } finally {
+        btnSynthesize.disabled = false;
+        btnSynthesize.innerHTML = `
+          <svg style="width:20px; height:20px; fill:currentColor;" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+          Render Voiceover with Kokoro & Music
+        `;
+      }
+    });
+  </script>
+</body>
+</html>
